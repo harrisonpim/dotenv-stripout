@@ -29,7 +29,8 @@ def get_git_top_level_path():
 
 def list_dotenv_file_paths():
     git_top_level_path = get_git_top_level_path()
-    dotenv_file_paths = [
-        str(path) for path in git_top_level_path.rglob("*.env")
-    ]
+    dotenv_file_paths = map(str, (
+        list(git_top_level_path.rglob("*.env")) +
+        list(git_top_level_path.rglob("*.env.*"))
+    ))
     return dotenv_file_paths

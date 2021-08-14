@@ -11,7 +11,7 @@ def status():
 
 
 @cli.command()
-def install(name: str, blah: bool = False):
+def install(name, blah: bool = False):
     if blah:
         typer.echo(f"Hello {name}")
     else:
@@ -29,7 +29,8 @@ def strip(dry_run: bool = False):
         paths = list_dotenv_file_paths()
         if dry_run:
             typer.echo(
-                "Running in --dry-run mode. Would have stripped secrets from:")
+                "Dry run - Would have stripped secrets from:"
+            )
             for path in paths:
                 typer.echo(path)
         else:
