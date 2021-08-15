@@ -3,18 +3,25 @@ from pathlib import Path
 from subprocess import CalledProcessError, check_output
 
 
-def get_git_top_level_path():
+def git(command):
+    """
+    run a git command
+    """
+    command = ["git"] + command
     try:
-        return Path(git("rev-parse --show-toplevel"))
+        return check_output(command, text=True).strip()
     except CalledProcessError:
-        raise OSError("Looks like this isn't a git repository!")
+        raise OSError(
+            "Something went wrong while running:\n" f"{' '.join(command)}"
+        )
+
+
+def get_git_top_level_path():
+    return Path(git(["rev-parse", "--show-toplevel"]))
 
 
 def get_git_dir():
-    try:
-        return Path(git("rev-parse --git-dir"))
-    except CalledProcessError:
-        raise OSError("Looks like this isn't a git repository!")
+    return Path(git(["rev-parse", "--git-dir"]))
 
 
 def get_attrfile(scope):
@@ -29,10 +36,3 @@ def get_attrfile(scope):
         attrfile = get_git_dir() / "info" / "attributes"
 
     return attrfile.expanduser()
-
-
-def git(command):
-    """
-    run a git command
-    """
-    return check_output(["git"] + command.split(), text=True).strip()

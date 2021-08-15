@@ -12,9 +12,6 @@ def main(
     dry_run: bool = typer.Option(
         False, help="Show the effect of the command without running it",
     ),
-    y: bool = typer.Option(
-        False, help="Don't ask for confirmation before running",
-    ),
 ):
     if ctx.invoked_subcommand is None:
         try:
@@ -24,11 +21,8 @@ def main(
                 for path in paths:
                     typer.echo(path)
             else:
-                if (
-                    typer.confirm(
-                        "Are you sure you want to strip secrets from this repo?"
-                    )
-                    or y
+                if typer.confirm(
+                    "Are you sure you want to strip secrets from this repo?"
                 ):
                     typer.echo("Stripping secrets from:")
                     for path in paths:
