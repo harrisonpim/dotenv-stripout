@@ -26,39 +26,39 @@ MY_SECRET_PASSWORD=
 
 Many software projects require the inclusion of sensitive data which shouldn't be committed to version control.
 
-The usual approach is for each collaborator to create a [gitignored](https://git-scm.com/docs/gitignore) `.env` file in their local copy of a repo with a common set of secret environment variables. 
+The usual approach is for each collaborator to create a [gitignored](https://git-scm.com/docs/gitignore) `.env` file in their local copy of a repo with a common set of secret environment variables.
 
 However, knowing the required variables for a project is not always obvious, and it's all too easy for a project's code to fall out of sync with the instructions for creating the `.env`.
 
-Using `dotenv-stripout` instead, a pre-commit hook removes the sensitive values from your repo's `.env` files as you commit your changes. This way, every named secret in your real environment will automatically be listed for your collaborators in a blank `.env` file - the only thing they'll need to fill in are the values themselves.
+Using `dotenv-stripout` instead, a git filter removes the sensitive values from your repo's `.env` files as you commit your changes. This way, every named secret in your real environment will automatically be listed for your collaborators in a blank `.env` file - the only thing they'll need to fill in are the values themselves.
 
 ## How?
 
-Installing the hook is a two-stage process. First, install the python package which handles the stripping and manages the hook.
+Installing the filter is a two-stage process. First, install the python package which handles the stripping and manages the filter.
 
 ```shell
 pip install dotenv-stripout
 ```
 
-Then, to install the hook in the current repo, run
+Then, to install the filter in the current repo, run
 
 ```shell
 dotenv-stripout install
 ```
 
-To remove the hook from the current repo, run
+To remove the filter from the current repo, run
 
 ```shell
 dotenv-stripout uninstall
 ```
 
-You can check whether the hook is installed by running
+You can check whether the filter is installed by running
 
 ```shell
 dotenv-stripout status
 ```
 
-Adding the `--global` flag to any command will point them to your global git config instead, with the installed hook applying to commits in any repo.
+Adding the `--global` flag to any command will point them to your global git config instead, with the installed filter applying to commits in any repo.
 
 ## Really?
 

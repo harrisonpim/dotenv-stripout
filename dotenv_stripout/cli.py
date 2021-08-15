@@ -36,27 +36,27 @@ def main(
             raise typer.Exit(1)
 
 
-@cli.command(help="Check whether the pre-commit hook has been installed")
+@cli.command(help="Check whether the filter has been installed")
 def status(
     _global: bool = typer.Option(
         False,
         "--global",
         help=(
-            "If set, the command will check for the pre-commit hook in the "
+            "If set, the command will check for the filter in the "
             "global git config instead of the current repo"
         ),
     ),
 ):
     scope = "global" if _global else "local"
     if is_installed(scope):
-        typer.echo(f"Hook is installed {scope}ly")
+        typer.echo(f"Filter is installed {scope}ly")
         if typer.confirm("Would you like to uninstall it?"):
             _uninstall(scope)
             typer.echo("Done!")
         else:
             raise typer.Abort()
     else:
-        typer.echo(f"Hook is not installed {scope}ly")
+        typer.echo(f"Filter is not installed {scope}ly")
         if typer.confirm("Would you like to install it?"):
             _install(scope)
             typer.echo("Done!")
@@ -64,13 +64,13 @@ def status(
             raise typer.Abort()
 
 
-@cli.command(help="Install dotenv-stripout as a git pre-commit hook")
+@cli.command(help="Install dotenv-stripout as a git filter")
 def install(
     _global: bool = typer.Option(
         False,
         "--global",
         help=(
-            "If set, the pre-commit hook will be added to your global git "
+            "If set, the filter will be added to your global git "
             "config instead of the current repo"
         ),
     ),
@@ -79,13 +79,13 @@ def install(
     _install(scope)
 
 
-@cli.command(help="Uninstall the pre-commit hook")
+@cli.command(help="Uninstall the filter")
 def uninstall(
     _global: bool = typer.Option(
         False,
         "--global",
         help=(
-            "If set, the pre-commit hook will be removed from your global git "
+            "If set, the filter will be removed from your global git "
             "config instead of the current repo"
         ),
     ),
