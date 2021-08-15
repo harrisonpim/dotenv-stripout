@@ -12,6 +12,14 @@ def main(
     dry_run: bool = typer.Option(
         False, help="Show the effect of the command without running it",
     ),
+    force: bool = typer.Option(
+        False, help="Don't ask for confirmation before stripping the files",
+    ),
+    text_output: bool = typer.Option(
+        False,
+        "-t",
+        help="Print the stripped outputs instead of writing them back to the files",
+    ),
 ):
     if ctx.invoked_subcommand is None:
         try:
@@ -21,13 +29,17 @@ def main(
                 for path in paths:
                     typer.echo(path)
             else:
-                if typer.confirm(
-                    "Are you sure you want to strip secrets from this repo?"
-                ):
+                if not force:
+                    proceed = typer.confirm(
+                        "Are you sure you want to strip secrets from this repo?"
+                    )
+                else:
+                    proceed = True
+                if proceed:
                     typer.echo("Stripping secrets from:")
                     for path in paths:
                         typer.echo(path)
-                        strip_file(path)
+                        strip_file(path, text_output)
                 else:
                     raise typer.Abort()
 
@@ -76,7 +88,12 @@ def install(
     ),
 ):
     scope = "global" if _global else "local"
-    _install(scope)
+    if is_installed(scope):
+        typer.echo(f"Filter is already {scope}ly installed!")
+        raise typer.Exit(1)
+    else:
+        _install(scope)
+        typer.echo("Done!")
 
 
 @cli.command(help="Uninstall the filter")
@@ -91,7 +108,12 @@ def uninstall(
     ),
 ):
     scope = "global" if _global else "local"
-    _uninstall(scope)
+    if is_installed(scope):
+        _uninstall(scope)
+        typer.echo("Done!")
+    else:
+        typer.echo(f"Filter is not yet {scope}ly installed!")
+        raise typer.Exit(1)
 
 
 if __name__ == "__main__":

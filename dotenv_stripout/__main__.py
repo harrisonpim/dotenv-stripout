@@ -1,4 +1,4 @@
-from .stripout import list_dotenv_file_paths, strip_file
+from .cli import cli
 
-for file in list_dotenv_file_paths():
-    strip_file(file)
+
+cli()

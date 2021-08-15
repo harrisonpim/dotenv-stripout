@@ -6,7 +6,7 @@ from .stripout import patterns
 attr_lines = [
     f"{pattern} {attribute}\n"
     for pattern in patterns
-    for attribute in ["filter=dotenvstripout"]
+    for attribute in ["filter=dotenvstripout", "diff=dotenvstripout"]
 ]
 
 
@@ -17,10 +17,18 @@ def _install(scope="local"):
             "config",
             f"--{scope}",
             "filter.dotenvstripout.clean",
-            f'"{python}" -m dotenv_stripout',
+            f'"{python}" -m dotenv_stripout --force',
         ]
     )
     git(["config", f"--{scope}", "filter.dotenvstripout.smudge", "cat"])
+    git(
+        [
+            "config",
+            f"--{scope}",
+            "diff.dotenvstripout.textconv",
+            f'"{python}" -m dotenv_stripout -t --force',
+        ]
+    )
 
     attrfile = get_attrfile(scope)
 
@@ -40,6 +48,7 @@ def _install(scope="local"):
 
 def _uninstall(scope="local"):
     git(["config", f"--{scope}", "--remove-section", "filter.dotenvstripout"])
+    git(["config", f"--{scope}", "--remove-section", "diff.dotenvstripout"])
     attrfile = get_attrfile(scope)
     with attrfile.open("r") as f:
         attrs_to_keep = [

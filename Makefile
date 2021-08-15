@@ -23,10 +23,10 @@ publish: check_version build
 
 # general commands
 clean:
-	rm -rf .hypothesis
-	rm -rf .pytest_cache
-	rm -rf ./*/__pycache__
-	rm -rf ./**/*.pyc
-	isort ./**/*.py; 
-	black . --line-length 80; 
+	isort
+	black . --line-length 80
 	flake8 . --max-line-length 80
+	rm -rf *.pyc **/*.pyc
+	rm -rf .hypothesis **/.hypothesis
+	rm -rf .pytest_cache **/.pytest_cache
+	rm -rf __pycache__ ./**/__pycache__
