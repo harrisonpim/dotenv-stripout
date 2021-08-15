@@ -1,20 +1,18 @@
 import os
 from pathlib import Path
-from subprocess import CalledProcessError
-
-from .utils import run_command
+from subprocess import CalledProcessError, check_output
 
 
 def get_git_top_level_path():
     try:
-        return Path(run_command("git rev-parse --show-toplevel"))
+        return Path(git("rev-parse --show-toplevel"))
     except CalledProcessError:
         raise OSError("Looks like this isn't a git repository!")
 
 
 def get_git_dir():
     try:
-        return Path(run_command("git rev-parse --git-dir"))
+        return Path(git("rev-parse --git-dir"))
     except CalledProcessError:
         raise OSError("Looks like this isn't a git repository!")
 
@@ -31,3 +29,10 @@ def get_attrfile(scope):
         attrfile = get_git_dir() / "info" / "attributes"
 
     return attrfile.expanduser()
+
+
+def git(command):
+    """
+    run a git command
+    """
+    return check_output(["git"] + command.split(), text=True).strip()

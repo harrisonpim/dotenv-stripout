@@ -1,8 +1,7 @@
 import sys
 
-from .git import get_attrfile
+from .git import get_attrfile, git
 from .stripout import patterns
-from .utils import run_command
 
 attr_lines = [
     f"{pattern} {attribute}"
@@ -13,11 +12,11 @@ attr_lines = [
 
 def _install(scope="local"):
     python = sys.executable.replace("\\", "/")
-    run_command(
-        f"git config --{scope} filter.dotenvstripout.clean "
+    git(
+        f"config --{scope} filter.dotenvstripout.clean "
         f"'{python} -m dotenv_stripout'"
     )
-    run_command(f"git config --{scope} filter.dotenvstripout.smudge cat")
+    git(f"config --{scope} filter.dotenvstripout.smudge cat")
 
     attrfile = get_attrfile(scope)
     with attrfile.open("ra") as f:
@@ -30,7 +29,7 @@ def _install(scope="local"):
 
 
 def _uninstall(scope="local"):
-    run_command(f"git config --{scope} --remove-section filter.dotenvstripout")
+    git(f"config --{scope} --remove-section filter.dotenvstripout")
     attrfile = get_attrfile(scope)
     with attrfile.open("r") as f:
         attrs_to_keep = [
