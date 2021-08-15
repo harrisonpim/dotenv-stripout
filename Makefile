@@ -1,10 +1,7 @@
 .PHONY: setup lint check_version build publish clean
 
-default: build
-
 # commands for building the package
 setup:
-	python -m pip install --upgrade pip
 	pip install flit
 	flit install -s
 
@@ -29,5 +26,7 @@ clean:
 	rm -rf .hypothesis
 	rm -rf .pytest_cache
 	rm -rf ./*/__pycache__
-	rm -rf ./dist
-	rm -rf ./site
+	rm -rf ./**/*.pyc
+	isort ./**/*.py; 
+	black . --line-length 80; 
+	flake8 . --max-line-length 80
