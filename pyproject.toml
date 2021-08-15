@@ -20,7 +20,8 @@ dev = [
     "black==19.10b0",
     "flake8==3.8.1",
     "isort==4.3.21",
+    "pytest==6.2.4",
 ]
 
 [tool.flit.scripts]
-dotenv-stripout = "dotenv_stripout:cli"
+dotenv-stripout = "dotenv_stripout.cli:cli"

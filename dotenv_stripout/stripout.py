@@ -1,6 +1,9 @@
-import subprocess
 from pathlib import Path
 from typing import Union
+
+from .git import get_git_top_level_path
+
+patterns = ["*.env", "*.env.*"]
 
 
 def strip_line(line: str):
@@ -17,20 +20,10 @@ def strip_file(path: Union[Path, str]):
         f.writelines(stripped_lines)
 
 
-def get_git_top_level_path():
-    try:
-        git_top_level_path = subprocess.check_output(
-            ["git", "rev-parse", "--show-toplevel"], universal_newlines=True
-        ).strip()
-        return Path(git_top_level_path)
-    except subprocess.CalledProcessError:
-        raise OSError("Looks like this isn't a git repository!")
-
-
 def list_dotenv_file_paths():
-    git_top_level_path = get_git_top_level_path()
-    dotenv_file_paths = map(str, (
-        list(git_top_level_path.rglob("*.env")) +
-        list(git_top_level_path.rglob("*.env.*"))
-    ))
-    return dotenv_file_paths
+    repo_path = get_git_top_level_path()
+    return [
+        str(path)
+        for pattern in patterns
+        for path in list(repo_path.rglob(pattern))
+    ]
