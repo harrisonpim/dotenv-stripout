@@ -1,0 +1,20 @@
+name: Run tests for each PR
+
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+      - name: Install dependencies
+        run: make setup
+      - name: Test
+        run: pytest
