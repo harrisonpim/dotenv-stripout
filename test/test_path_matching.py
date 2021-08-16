@@ -6,11 +6,9 @@ data_dir = Path(__file__).parent / "data"
 names_to_match = [".env", ".env.something", "something.env.something"]
 names_to_not_match = [".environment"]
 directories = [data_dir, data_dir / "subdir", data_dir / "subdir" / "subsubdir"]
-paths_to_match = [
-    str(dir / name) for dir in directories for name in names_to_match
-]
+paths_to_match = [dir / name for dir in directories for name in names_to_match]
 paths_to_not_match = [
-    str(dir / name) for dir in directories for name in names_to_not_match
+    dir / name for dir in directories for name in names_to_not_match
 ]
 
 found_paths = set(list_dotenv_file_paths())

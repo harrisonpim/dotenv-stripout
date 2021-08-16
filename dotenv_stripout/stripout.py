@@ -1,3 +1,5 @@
+import sys
+
 from .git import get_git_top_level_path
 
 patterns = ["*.env", "*.env.*"]
@@ -10,20 +12,25 @@ def list_dotenv_file_paths():
     ]
 
 
-def strip_line(line):
+def strip_line(line, newline=''):
     line = line.strip()
     if len(line) > 0:
-        line = line.split("=")[0] + "=\n"
+        line = line.split("=")[0] + f"={newline}"
     return line
 
 
-def strip_file(path, text_output):
+def strip_lines(lines, newline=''):
+    return [strip_line(line, newline=newline) for line in lines]
+
+
+def strip_file(path):
     with path.open("r") as f:
         lines = f.readlines()
-    stripped_lines = [strip_line(line) for line in lines]
-    if text_output:
-        for line in stripped_lines:
-            print(line)
-    else:
-        with path.open("w") as f:
-            f.writelines(stripped_lines)
+    stripped_lines = strip_lines(lines, newline="\n")
+    with path.open("w") as f:
+        f.writelines(stripped_lines)
+
+
+def strip_stdin():
+    for line in sys.stdin:
+        sys.stdout.write(strip_line(line, newline="\n"))

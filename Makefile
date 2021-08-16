@@ -1,14 +1,11 @@
-.PHONY: setup lint check_version build publish clean
+.PHONY: setup test lint check_version build publish clean
 
-# commands for building the package
 setup:
 	pip install flit
 	flit install -s
 
-lint:
-	isort *.py
-	black --line-length 80
-	flake8 --ignore=E501,W291
+test:
+	pytest
 
 build: clean lint
 	flit build
@@ -21,11 +18,10 @@ check_version:
 publish: check_version build
 	flit publish
 
-# general commands
 clean:
-	isort
+	isort ./**/*.py
 	black . --line-length 80
-	flake8 . --max-line-length 80
+	flake8 . --max-line-length 80 --ignore=E501,W291
 	rm -rf *.pyc **/*.pyc
 	rm -rf .hypothesis **/.hypothesis
 	rm -rf .pytest_cache **/.pytest_cache

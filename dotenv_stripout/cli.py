@@ -1,7 +1,12 @@
+from . import __version__
 import typer
 
 from .install import _install, _uninstall, is_installed
-from .stripout import list_dotenv_file_paths, strip_file
+from .stripout import (
+    list_dotenv_file_paths,
+    strip_file,
+    strip_stdin,
+)
 
 cli = typer.Typer(help="Strip secrets from all .env files in the current repo")
 
@@ -12,34 +17,33 @@ def main(
     dry_run: bool = typer.Option(
         False, help="Show the effect of the command without running it",
     ),
-    force: bool = typer.Option(
-        False, help="Don't ask for confirmation before stripping the files",
+    stdin: bool = typer.Option(
+        False, help="Read lines from stdin and write stripped lines to stdout",
     ),
-    text_output: bool = typer.Option(
-        False,
-        "-t",
-        help="Print the stripped outputs instead of writing them back to the files",
+    version: bool = typer.Option(
+        False, '-v', help="Print the package version",
     ),
 ):
     if ctx.invoked_subcommand is None:
+        if version:
+            typer.echo(__version__)
+            raise typer.Exit(0)
         try:
-            paths = list_dotenv_file_paths()
-            if dry_run:
-                typer.echo("Dry run - Would have stripped secrets from:")
-                for path in paths:
-                    typer.echo(path)
+            if stdin:
+                strip_stdin()
             else:
-                if not force:
-                    proceed = typer.confirm(
-                        "Are you sure you want to strip secrets from this repo?"
-                    )
-                else:
-                    proceed = True
-                if proceed:
+                paths = list_dotenv_file_paths()
+                if dry_run:
+                    typer.echo("Dry run - Would have stripped secrets from:")
+                    for path in paths:
+                        typer.echo(path)
+                elif typer.confirm(
+                    "Are you sure you want to strip secrets from this repo?"
+                ):
                     typer.echo("Stripping secrets from:")
                     for path in paths:
                         typer.echo(path)
-                        strip_file(path, text_output)
+                        strip_file(path)
                 else:
                     raise typer.Abort()
 
