@@ -1,4 +1,4 @@
-.PHONY: setup test lint check_version build publish clean
+.PHONY: setup test build check_version publish clean
 
 setup:
 	pip install flit
@@ -7,7 +7,7 @@ setup:
 test:
 	pytest
 
-build: clean lint
+build:
 	flit build
 
 MODULE_VERSION := $(shell python -c "from dotenv_stripout import __version__ as v; print(v)" | tail -n1)
@@ -22,6 +22,7 @@ clean:
 	isort ./**/*.py
 	black . --line-length 80
 	flake8 . --max-line-length 80 --ignore=E501,W291
+	rm -rf dist **/dist
 	rm -rf *.pyc **/*.pyc
 	rm -rf .hypothesis **/.hypothesis
 	rm -rf .pytest_cache **/.pytest_cache
