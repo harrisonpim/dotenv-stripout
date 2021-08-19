@@ -66,11 +66,6 @@ def status(
     scope = "global" if _global else "local"
     if is_installed(scope):
         typer.echo(f"Filter is installed {scope}ly")
-        if typer.confirm("Would you like to uninstall it?"):
-            _uninstall(scope)
-            typer.echo("Done!")
-        else:
-            raise typer.Abort()
     else:
         typer.echo(f"Filter is not installed {scope}ly")
         if typer.confirm("Would you like to install it?"):
