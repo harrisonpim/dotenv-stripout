@@ -12,14 +12,14 @@ def list_dotenv_file_paths():
     ]
 
 
-def strip_line(line, newline=''):
+def strip_line(line, newline=""):
     line = line.strip()
     if len(line) > 0:
         line = line.split("=")[0] + f"={newline}"
     return line
 
 
-def strip_lines(lines, newline=''):
+def strip_lines(lines, newline=""):
     return [strip_line(line, newline=newline) for line in lines]
 
 

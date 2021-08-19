@@ -1,12 +1,8 @@
-from . import __version__
 import typer
 
+from . import __version__
 from .install import _install, _uninstall, is_installed
-from .stripout import (
-    list_dotenv_file_paths,
-    strip_file,
-    strip_stdin,
-)
+from .stripout import list_dotenv_file_paths, strip_file, strip_stdin
 
 cli = typer.Typer(help="Strip secrets from all .env files in the current repo")
 
@@ -21,7 +17,7 @@ def main(
         False, help="Read lines from stdin and write stripped lines to stdout",
     ),
     version: bool = typer.Option(
-        False, '-v', help="Print the package version",
+        False, "-v", help="Print the package version",
     ),
 ):
     if ctx.invoked_subcommand is None:

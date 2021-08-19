@@ -5,9 +5,7 @@ from .stripout import patterns
 
 attr_lines = [
     f"{pattern} {attribute}\n"
-    for attribute in [
-        "filter=dotenvstripout",
-    ]
+    for attribute in ["filter=dotenvstripout",]
     for pattern in patterns
 ]
 
