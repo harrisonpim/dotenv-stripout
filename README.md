@@ -1,8 +1,6 @@
-![Tests](https://github.com/harrisonpim/dotenv-stripout/workflows/test/badge.svg)
-
 # :see_no_evil: .env stripout
 
-Automagically removes sensitive data from your `.env` files, while maximising collaboration and reproducibility.
+Automagically remove sensitive data from your `.env` files, while maximising collaboration and reproducibility.
 
 Loosely inspired by [nbstripout](https://github.com/kynan/nbstripout).
 
@@ -24,17 +22,19 @@ MY_SECRET_PASSWORD=
 
 ## Why?
 
-Many software projects require the inclusion of sensitive data which shouldn't be committed to version control.
+Many software projects require the inclusion of sensitive data which shouldn't be committed to version control. You don't want Bad Guys to see your usernames, passwords, API keys, etc.
 
-The usual approach is for each collaborator to create a [gitignored](https://git-scm.com/docs/gitignore) `.env` file in their local copy of a repo with a common set of secret environment variables.
+To get around this, many projects require each that collaborator creates a local `.env` file with a list of secret environment variables used in the code. The file is then [gitignored](https://git-scm.com/docs/gitignore) so that the sensitive values never appear on GitHub for malicious users to steal.
 
-However, knowing the required variables for a project is not always obvious, and it's all too easy for a project's code to fall out of sync with the instructions for creating the `.env`.
+However, for well-intentioned new collaborators, the complete absence of a `.env` file means that the required variables for a project are rarely obvious. It's easy for a project's code to fall out of sync with the instructions for creating a `.env`, and not knowing which secrets to provide can be a significant source of friction while trying to get started.
 
-Using `dotenv-stripout` instead, a git filter removes the sensitive values from your repo's `.env` files as you commit your changes. This way, every named secret in your real environment will automatically be listed for your collaborators in a blank `.env` file - the only thing they'll need to fill in are the values themselves.
+I _want_ to share my `.env` files with my collaborators, but without the secret bits.
+
+Using `dotenv-stripout`, a git filter removes the sensitive values from all of the `.env` files in your repo at the moment they're staged for commit, while keeping the _names_ of the secrets intact (see the [example](#an-example)). The result for your collaborators is an always-up-to-date set of required secrets, in the actual `.env` file where they need to be filled out.
 
 ## How?
 
-Installing the filter is a two-stage process. First, install the python package which handles the stripping and manages the filter.
+First, install the python package which does the stripping and manages the git filter.
 
 ```shell
 pip install dotenv-stripout
@@ -60,10 +60,16 @@ dotenv-stripout status
 
 Adding the `--global` flag to any command will point them to your global git config instead, with the installed filter applying to commits in any repo.
 
+You can also use the CLI to strip your actual working `.env` files in the current repo. Just run
+
+```shell
+dotenv-stripout
+```
+
 ## Really?
 
-Nah, probably not... It works, but using this IRL is probably a bad idea.
+Nah, probably not... The package works, but using it IRL is probably a bad idea.If nothing else, this little project has been as a good opportunity for me to learn more of the arcane black magic which powers git.
 
-The use of `.env` files is a well established convention at this point, and this stripout approach has just as many potential flaws as using a standard, blunt `.gitignore`.
+The use of `.env`s and `.gitignore` files is a well established convention at this point, and this stripout approach has just as many potential flaws as a standard, blunt `.gitignore`.
 
-If nothing else, this project might serve as a provocation or reminder of how crap the general state of secret management is. It's also been a good opportunity for me to learn more of the arcane black magic which powers git.
+There are also plenty of other common patterns for sharing secrets which already work very well (eg use of [AWS secrets manager](https://aws.amazon.com/secrets-manager/), or environment variable management with providers like [vercel](https://vercel.com/docs/environment-variables) or [netlify](https://docs.netlify.com/configure-builds/environment-variables/)), though making sense of them can be just as tricky for newcomers.
