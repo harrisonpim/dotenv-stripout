@@ -1,6 +1,6 @@
 # :see_no_evil: dotenv-stripout
 
-A git filter for removing sensitive data from your projects, while maximising collaboration and reproducibility.
+An easily-installable git filter which hides your projects' sensitive data, while maximising collaboration and reproducibility.
 
 It's like [nbstripout](https://github.com/kynan/nbstripout) for your `.env` files.
 
