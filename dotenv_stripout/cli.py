@@ -11,13 +11,17 @@ cli = typer.Typer(help="Strip secrets from all .env files in the current repo")
 def main(
     ctx: typer.Context,
     dry_run: bool = typer.Option(
-        False, help="Show the effect of the command without running it",
+        False,
+        help="Show the effect of the command without running it",
     ),
     stdin: bool = typer.Option(
-        False, help="Read lines from stdin and write stripped lines to stdout",
+        False,
+        help="Read lines from stdin and write stripped lines to stdout",
     ),
     version: bool = typer.Option(
-        False, "-v", help="Print the package version",
+        False,
+        "-v",
+        help="Print the package version",
     ),
 ):
     if ctx.invoked_subcommand is None:

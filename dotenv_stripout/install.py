@@ -30,7 +30,9 @@ def _install(scope="local"):
     with attrfile.open("r") as f:
         attrs = f.readlines()
 
-    with attrfile.open("a",) as f:
+    with attrfile.open(
+        "a",
+    ) as f:
         if f.tell():
             f.write("\n")
         for line in attr_lines:
