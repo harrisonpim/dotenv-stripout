@@ -15,7 +15,9 @@ def list_dotenv_file_paths():
 def strip_line(line, newline=""):
     line = line.strip()
     if len(line) > 0:
-        if not line.startswith("#"):
+        if line.startswith("#"):
+            return line + newline
+        else:
             line = line.split("=")[0] + f"={newline}"
     return line
 
