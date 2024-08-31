@@ -68,7 +68,7 @@ def status(
     ),
 ):
     """Check whether the filter has been installed"""
-    scope = Scope.GLOBAL if _global else Scope.LOCAL
+    scope = "global" if _global else "local"
     if is_installed(scope):
         typer.echo(f"Filter is installed {scope}ly")
     else:
@@ -92,7 +92,7 @@ def install(
     ),
 ):
     """Install dotenv-stripout as a git filter"""
-    scope = Scope.GLOBAL if _global else Scope.LOCAL
+    scope = "global" if _global else "local"
     if is_installed(scope):
         typer.echo(f"Filter is already {scope}ly installed!")
         raise typer.Exit(1)
@@ -113,7 +113,7 @@ def uninstall(
     ),
 ):
     """Uninstall dotenv-stripout as a git filter"""
-    scope = Scope.GLOBAL if _global else Scope.LOCAL
+    scope = "global" if _global else "local"
     if is_installed(scope):
         _uninstall(scope)
         typer.echo("Done!")

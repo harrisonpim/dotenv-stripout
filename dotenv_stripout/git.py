@@ -1,19 +1,9 @@
 import os
 from pathlib import Path
 from subprocess import CalledProcessError, check_output
-from enum import Enum
+from typing import Literal
 
-
-class Scope(Enum):
-    """
-    The scope of the git filter. Options are "global" and "local"
-
-    Local refers to the current git repository, while global refers to the user's
-    global git config. See https://git-scm.com/docs/git-config#SCOPES for more info
-    """
-
-    GLOBAL = "global"
-    LOCAL = "local"
+Scope = Literal["local", "global"]
 
 
 def git(command: list[str]) -> str:
@@ -56,7 +46,7 @@ def get_attrfile(scope: Scope) -> Path:
     :param Scope scope: The scope of the git filter
     :return Path: The path to the git attributes file
     """
-    if scope == Scope.GLOBAL:
+    if scope == "global":
         config_dir = Path("~/.config").expanduser()
         xdg_config_dir = Path(os.environ.get("XDG_CONFIG_DIR", config_dir))
         if xdg_config_dir.exists():
