@@ -4,7 +4,7 @@ from . import __version__
 from .install import _install, _uninstall, is_installed
 from .stripout import list_dotenv_file_paths, strip_file, strip_stdin
 
-cli = typer.Typer(help="Strip secrets from all .env files in the current repo")
+cli = typer.Typer(help="Strip secrets from .env files in the current repo")
 
 
 @cli.callback(invoke_without_command=True)
@@ -44,6 +44,9 @@ def main(
                     for path in paths:
                         typer.echo(path)
                         strip_file(path)
+                    typer.echo(
+                        "\nNote: Files listed in .dotenv-stripout-ignore were not stripped."
+                    )
                 else:
                     raise typer.Abort()
 

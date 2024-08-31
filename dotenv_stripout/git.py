@@ -11,9 +11,7 @@ def git(command):
     try:
         return check_output(command, text=True).strip()
     except CalledProcessError:
-        raise OSError(
-            "Something went wrong while running:\n" f"{' '.join(command)}"
-        )
+        raise OSError("Something went wrong while running:\n" f"{' '.join(command)}")
 
 
 def get_git_top_level_path():
