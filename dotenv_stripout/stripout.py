@@ -7,20 +7,35 @@ patterns = ["*.env", "*.env.*"]
 ignore_file = ".dotenv-stripout-ignore"
 
 
-def get_ignored_files() -> set:
+def list_ignored_files() -> set:
     """
-    Get the list of local env files to leave unstripped
+    Get the set of local .env files to leave unstripped
 
-    Files to be left unstripped are listed in a file named .dotenv-stripout-ignore
+    Files to be left unstripped are listed in .dotenv-stripout-ignore files,
+    which can be present in any directory.
 
-    :return set: The set of files to ignore
+    :return set: A set of paths to the .env files which dotenv-stripout should ignore
     """
+    ignored_files = set()
     repo_path = get_git_top_level_path()
-    ignore_file_path = repo_path / ignore_file
-    if ignore_file_path.exists():
-        with ignore_file_path.open("r") as f:
-            return {line.strip() for line in f if line.strip()}
-    return set()
+    dotenv_stripout_ignore_file_paths = repo_path.rglob(ignore_file)
+    ignore_patterns = []
+    for file_path in dotenv_stripout_ignore_file_paths:
+        with file_path.open("r") as f:
+            for line in f:
+                if line.strip():
+                    ignore_patterns.append(line.strip())
+
+    for pattern in ignore_patterns:
+        ignored_files.update(
+            [
+                path
+                for path in repo_path.rglob(pattern)
+                if path.name not in ignored_files
+            ]
+        )
+
+    return ignored_files
 
 
 def list_dotenv_file_paths() -> list:
@@ -30,12 +45,11 @@ def list_dotenv_file_paths() -> list:
     :return list: A list of paths to dotenv files to strip
     """
     repo_path = get_git_top_level_path()
-    ignored_files = get_ignored_files()
     return [
         path
         for pattern in patterns
         for path in repo_path.rglob(pattern)
-        if path.name not in ignored_files
+        if path not in list_ignored_files()
     ]
 
 
