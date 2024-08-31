@@ -1,12 +1,20 @@
 import sys
-
+from typing import Union
+from pathlib import Path
 from .git import get_git_top_level_path
 
 patterns = ["*.env", "*.env.*"]
 ignore_file = ".dotenv-stripout-ignore"
 
 
-def get_ignored_files():
+def get_ignored_files() -> set:
+    """
+    Get the list of local env files to leave unstripped
+
+    Files to be left unstripped are listed in a file named .dotenv-stripout-ignore
+
+    :return set: The set of files to ignore
+    """
     repo_path = get_git_top_level_path()
     ignore_file_path = repo_path / ignore_file
     if ignore_file_path.exists():
@@ -15,7 +23,12 @@ def get_ignored_files():
     return set()
 
 
-def list_dotenv_file_paths():
+def list_dotenv_file_paths() -> list:
+    """
+    List all dotenv files in the repo, excluding those in .dotenv-stripout-ignore
+
+    :return list: A list of paths to dotenv files to strip
+    """
     repo_path = get_git_top_level_path()
     ignored_files = get_ignored_files()
     return [
@@ -26,7 +39,14 @@ def list_dotenv_file_paths():
     ]
 
 
-def strip_line(line, newline=""):
+def strip_line(line: str, newline: str = "") -> str:
+    """
+    Strip the value from a line of a dotenv file
+
+    :param str line: The line to strip
+    :param str newline: The newline character to use, defaults to ""
+    :return str: The stripped line
+    """
     line = line.strip()
     if len(line) > 0:
         if line.startswith("#"):
@@ -36,11 +56,23 @@ def strip_line(line, newline=""):
     return line
 
 
-def strip_lines(lines, newline=""):
+def strip_lines(lines: list[str], newline: str = "") -> list[str]:
+    """
+    Strip the values from a list of lines of a dotenv file
+
+    :param list[str] lines: The lines to strip
+    :param str newline: The newline character to use, defaults to ""
+    :return list[str]: The stripped lines
+    """
     return [strip_line(line, newline=newline) for line in lines]
 
 
-def strip_file(path):
+def strip_file(path: Union[Path, str]):
+    """
+    Strip the values from a dotenv file
+
+    :param Union[Path, str] path: The path to the dotenv file
+    """
     with path.open("r") as f:
         lines = f.readlines()
     stripped_lines = strip_lines(lines, newline="\n")
@@ -49,5 +81,6 @@ def strip_file(path):
 
 
 def strip_stdin():
+    """Strip the values a dotenv file provided via stdin"""
     for line in sys.stdin:
         sys.stdout.write(strip_line(line, newline="\n"))

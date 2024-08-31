@@ -1,6 +1,6 @@
 import sys
 
-from .git import get_attrfile, git
+from .git import get_attrfile, git, Scope
 from .stripout import patterns
 
 attr_lines = [
@@ -10,7 +10,12 @@ attr_lines = [
 ]
 
 
-def _install(scope="local"):
+def _install(scope: Scope = Scope.LOCAL):
+    """
+    Install dotenv_stripout as a git filter in the given scope
+
+    :param Scope scope: The scope to install the filter in, defaults to Scope.LOCAL
+    """
     python = sys.executable.replace("\\", "/")
     git(["config", f"--{scope}", "filter.dotenvstripout.smudge", "cat"])
     git(
@@ -40,18 +45,27 @@ def _install(scope="local"):
                 f.write(line)
 
 
-def _uninstall(scope="local"):
+def _uninstall(scope: Scope = Scope.LOCAL):
+    """
+    Uninstall dotenv_stripout as a git filter from the given scope
+
+    :param Scope scope: The scope to uninstall the filter from, defaults to Scope.LOCAL
+    """
     git(["config", f"--{scope}", "--remove-section", "filter.dotenvstripout"])
     attrfile = get_attrfile(scope)
     with attrfile.open("r") as f:
-        attrs_to_keep = [
-            line for line in f.readlines() if line not in attr_lines
-        ]
+        attrs_to_keep = [line for line in f.readlines() if line not in attr_lines]
     with attrfile.open("w") as f:
         f.writelines(attrs_to_keep)
 
 
-def is_installed(scope="local"):
+def is_installed(scope: Scope = Scope.LOCAL) -> bool:
+    """
+    Check whether the filter has been installed in the given scope
+
+    :param Scope scope: The scope to check for the filter in, defaults to Scope.LOCAL
+    :return bool: True if the filter is installed, False otherwise
+    """
     attrfile = get_attrfile(scope)
     try:
         with attrfile.open("r") as f:

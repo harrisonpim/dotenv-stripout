@@ -3,6 +3,7 @@ import typer
 from . import __version__
 from .install import _install, _uninstall, is_installed
 from .stripout import list_dotenv_file_paths, strip_file, strip_stdin
+from .git import Scope
 
 cli = typer.Typer(help="Strip secrets from .env files in the current repo")
 
@@ -66,7 +67,8 @@ def status(
         ),
     ),
 ):
-    scope = "global" if _global else "local"
+    """Check whether the filter has been installed"""
+    scope = Scope.GLOBAL if _global else Scope.LOCAL
     if is_installed(scope):
         typer.echo(f"Filter is installed {scope}ly")
     else:
@@ -89,7 +91,8 @@ def install(
         ),
     ),
 ):
-    scope = "global" if _global else "local"
+    """Install dotenv-stripout as a git filter"""
+    scope = Scope.GLOBAL if _global else Scope.LOCAL
     if is_installed(scope):
         typer.echo(f"Filter is already {scope}ly installed!")
         raise typer.Exit(1)
@@ -109,7 +112,8 @@ def uninstall(
         ),
     ),
 ):
-    scope = "global" if _global else "local"
+    """Uninstall dotenv-stripout as a git filter"""
+    scope = Scope.GLOBAL if _global else Scope.LOCAL
     if is_installed(scope):
         _uninstall(scope)
         typer.echo("Done!")
